@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.viewmodel.PostRepository
 
 class PostRepositoryFileImpl(private val context: Context) : PostRepository {
     private val gson = Gson()
@@ -18,8 +17,8 @@ class PostRepositoryFileImpl(private val context: Context) : PostRepository {
 
     init {
         val file = context.filesDir.resolve(filename)
-        if(file.exists()) {
-            context.openFileInput(filename).bufferedReader().use{
+        if (file.exists()) {
+            context.openFileInput(filename).bufferedReader().use {
                 try {
                     posts = gson.fromJson(it, type)
                     data.value = posts
@@ -33,7 +32,7 @@ class PostRepositoryFileImpl(private val context: Context) : PostRepository {
     }
 
     private fun sync() {
-        context.openFileOutput(filename,Context.MODE_PRIVATE).bufferedWriter().use {
+        context.openFileOutput(filename, Context.MODE_PRIVATE).bufferedWriter().use {
             it.write(gson.toJson(posts))
         }
     }
@@ -75,7 +74,7 @@ class PostRepositoryFileImpl(private val context: Context) : PostRepository {
 
     override fun save(post: Post) {
         if (post.id == 0L && post.content.isNotEmpty()) {
-            posts = posts +listOf(
+            posts = posts + listOf(
                 post.copy(
                     id = nextId++,
                     title = "Me",
