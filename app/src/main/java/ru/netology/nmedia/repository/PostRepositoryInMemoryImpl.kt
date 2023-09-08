@@ -19,7 +19,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             id = nextId++,
             title = "Нетология. Университет интернет-профессий будущего",
             content = "Знаний хватит на всех, на следующей неделе разбираемся с.. Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растём сами и помогаем расти студентам: от новичков до уверенных профессионалов.",
-            published = "18 сентября в 10:12"
+            published = "18 сентября в 10:12",
+            videoUrl = "https://www.youtube.com/watch?v=ir0vFRaQ-Hw"
         ),
         Post(
             id = nextId++,
@@ -76,7 +77,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
 
     override fun save(post: Post) {
         if (post.id == 0L && post.content.isNotEmpty()) {
-            posts = listOf(
+            posts = posts +listOf(
                 post.copy(
                     id = nextId++,
                     title = "Me",
@@ -85,7 +86,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
                     sharedByMe = false,
                     viewedByMe = false
                 )
-            ) + posts
+            )
             data.value = posts
             return
         }
