@@ -38,12 +38,18 @@ class FCMService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         message.data[action]?.let { actionType ->
             val listAction = Action.values().map { it.name }
-            if (!listAction.contains(actionType)){
+            if (!listAction.contains(actionType)) {
                 handleUnknownAction()
                 return
             }
             when (Action.valueOf(actionType)) {
                 Action.LIKE -> handleLike(gson.fromJson(message.data[content], Like::class.java))
+                Action.SEND_POST -> handleSendPost(
+                    gson.fromJson(
+                        message.data[content],
+                        NewPost::class.java
+                    )
+                )
             }
         }
     }
@@ -51,12 +57,49 @@ class FCMService : FirebaseMessagingService() {
     private fun handleLike(content: Like) {
         val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.netology_foreground)
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(
+                        getString(
+                            R.string.notification_user_liked,
+                            content.userName,
+                            content.postTitle,
+                        )
+                    )
+            )
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        NotificationManagerCompat.from(this)
+            .notify(Random.nextInt(100_000), notification)
+    }
+
+    private fun handleSendPost(content: NewPost) {
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.netology_foreground)
             .setContentTitle(
                 getString(
-                    R.string.notification_user_liked,
-                    content.userName,
-                    content.postTitle,
+                    R.string.notification_user_sending_post,
+                    content.userName
                 )
+            )
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(content.textPost)
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
@@ -82,7 +125,11 @@ class FCMService : FirebaseMessagingService() {
     private fun handleUnknownAction() {
         val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.netology_foreground)
-            .setContentTitle(getString(R.string.obscure_operation))
+            .setContentTitle(getString(R.string.unknown_action))
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(getString(R.string.obscure_operation))
+            )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
 
@@ -109,7 +156,8 @@ class FCMService : FirebaseMessagingService() {
     }
 
     enum class Action {
-        LIKE
+        LIKE,
+        SEND_POST
     }
 
     data class Like(
@@ -117,5 +165,10 @@ class FCMService : FirebaseMessagingService() {
         val userName: String,
         val postId: Long,
         val postTitle: String,
+    )
+
+    data class NewPost(
+        val userName: String,
+        val textPost: String
     )
 }
