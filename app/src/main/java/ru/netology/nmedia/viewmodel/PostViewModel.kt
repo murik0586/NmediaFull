@@ -42,7 +42,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     val postCreated: LiveData<Unit>
         get() = _postCreated
     private val _photo = MutableLiveData(
-        PhotoModel(edited.value?.attachment?.url?.toUri(), edited.value?.attachment?.url?.toUri()?.toFile()) ?: noPhoto
+        PhotoModel(edited.value?.attachment?.url?.toUri(), edited.value?.attachment?.url?.toUri()?.toFile())
+        ?: noPhoto
     )
     val photo: LiveData<PhotoModel>
         get() = _photo

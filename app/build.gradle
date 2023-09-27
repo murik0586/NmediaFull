@@ -44,7 +44,6 @@ android {
     }
 }
 
-
 dependencies {
     implementation 'com.google.android.gms:play-services-cast-framework:21.3.0'
     def core_version = "1.9.0"
@@ -71,6 +70,8 @@ dependencies {
     def coroutines_version = "1.6.4"
     def okhttp_logging_version = "4.10.0"
     def image_picker_version = "2.1"
+
+
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "androidx.core:core-ktx:$core_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
@@ -116,4 +117,3 @@ dependencies {
 
 
 }
-
