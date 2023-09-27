@@ -1,5 +1,6 @@
 package ru.netology.nmedia.service
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -51,6 +52,7 @@ class FCMService : FirebaseMessagingService() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun handleLike(content: Like) {
         val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.netology_foreground)
@@ -71,6 +73,7 @@ class FCMService : FirebaseMessagingService() {
             .notify(Random.nextInt(100_000), notification)
     }
 
+    @SuppressLint("MissingPermission")
     private fun handleSendPost(content: NewPost) {
         val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.netology_foreground)
@@ -91,6 +94,7 @@ class FCMService : FirebaseMessagingService() {
             .notify(Random.nextInt(100_000), notification)
     }
 
+    @SuppressLint("MissingPermission")
     private fun handleUnknownAction() {
         val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.netology_foreground)
