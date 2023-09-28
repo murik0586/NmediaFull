@@ -4,11 +4,9 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'com.google.gms.google-services'
-
 }
 
 android {
-
     compileSdk 33
 
     defaultConfig {
@@ -42,11 +40,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    namespace 'ru.netology.nmedia'
 }
 
 dependencies {
-    implementation 'com.google.android.gms:play-services-cast-framework:21.3.0'
     def core_version = "1.9.0"
     def appcompat_version = "1.5.1"
     def mdc_version = "1.7.0"
@@ -71,8 +67,6 @@ dependencies {
     def coroutines_version = "1.6.4"
     def okhttp_logging_version = "4.10.0"
     def image_picker_version = "2.1"
-
-
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "androidx.core:core-ktx:$core_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
@@ -98,6 +92,8 @@ dependencies {
     implementation "com.google.firebase:firebase-messaging-ktx"
     implementation "com.google.android.gms:play-services-base:$play_services_base_version"
 
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines_version"
+
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipe_refresh_layout"
 
@@ -118,3 +114,4 @@ dependencies {
 
 
 }
+
