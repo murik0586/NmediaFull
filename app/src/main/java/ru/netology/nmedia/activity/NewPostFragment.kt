@@ -95,6 +95,7 @@ class NewPostFragment : Fragment() {
         }
     }
 
+
     override fun onStart() {
         currentFragment = javaClass.simpleName
         super.onStart()
