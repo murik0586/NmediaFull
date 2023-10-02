@@ -29,7 +29,6 @@ class ApiModule {
         }
     }
 
-
     @Provides
     @Singleton
     fun provideOkHttp(

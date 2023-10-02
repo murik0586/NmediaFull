@@ -33,7 +33,6 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 return@let
             }
 
-
             val text = it.getStringExtra(Intent.EXTRA_TEXT)
             if (text?.isNotBlank() != true) {
                 return@let
