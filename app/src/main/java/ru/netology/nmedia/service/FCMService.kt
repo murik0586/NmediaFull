@@ -78,7 +78,6 @@ class FCMService : FirebaseMessagingService() {
                 appAuth.sendPushToken()
             }
         }
-
     }
 
     override fun onNewToken(token: String) {
@@ -95,7 +94,6 @@ class FCMService : FirebaseMessagingService() {
                             R.string.notification_user_liked,
                             content.userName,
                             content.postTitle,
-
                         )
                     )
             )
