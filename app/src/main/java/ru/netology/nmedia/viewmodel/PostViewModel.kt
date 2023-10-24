@@ -75,18 +75,12 @@ class PostViewModel @Inject constructor(
                             else -> null
                         }
                     } else {
-                        if (prev is Post) {
-                            TimingSeparator(Random.nextLong(),"Предыдущий")
-                        } else if (next is Post) {
-                            TimingSeparator(Random.nextLong(), "Следующий")
-                        } else {
-                            TimingSeparator(Random.nextLong(), "Иначный")
-                        }
+                        null
                     }
                 }
             )
         }
-        .cachedIn(viewModelScope)
+        //.cachedIn(viewModelScope)
 
     @RequiresApi(Build.VERSION_CODES.O)
     val data: Flow<PagingData<FeedItem>> = appAuth.authStateFlow
@@ -114,9 +108,9 @@ class PostViewModel @Inject constructor(
         get() = _dataComment
     private val _dataComment: MutableLiveData<List<Comment>> = MutableLiveData(listOf())
 
-//    val dataPost: LiveData<Post>
-//        get() = _dataPost
-//    private val _dataPost: MutableLiveData<Post> = MutableLiveData(emptyPost)
+    val dataPost: LiveData<Post>
+        get() = _dataPost
+    private val _dataPost: MutableLiveData<Post> = MutableLiveData(emptyPost)
 
     private val _photo = MutableLiveData(
         PhotoModel(
@@ -140,6 +134,7 @@ class PostViewModel @Inject constructor(
 
     fun viewNewPosts() = viewModelScope.launch {
         try {
+            newerCount.collectLatest { 0 }
             repository.showNewPosts()
             loadPosts()
             _dataState.value = FeedModelState.ShadowIdle
@@ -235,8 +230,14 @@ class PostViewModel @Inject constructor(
         _photo.value = noPhoto
     }
 
-//    fun getPostById(id: Long) = repository.getById(id)
-
+    fun getPostById(id: Long) = viewModelScope.launch {
+        try {
+            _dataPost.value = repository.getById(id)
+            _dataState.value = FeedModelState.ShadowIdle
+        } catch (e: Exception) {
+            _dataState.value = FeedModelState.Error
+        }
+    }
 //    fun shareById(id: Long) {  }
 
 //    fun getEditedPostImgRes(): String? { //todo
@@ -246,4 +247,4 @@ class PostViewModel @Inject constructor(
 //    fun deleteAttachment() { //todo
 //        edited.value = edited.value?.copy(attachment = null)
 //    }
-}
+    }
