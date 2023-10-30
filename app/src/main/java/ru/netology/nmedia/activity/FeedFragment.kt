@@ -52,7 +52,7 @@ class FeedFragment : Fragment() {
 
         override fun onLike(post: Post) {
             if (authViewModel.authenticated) {
-                viewModel.likeById(post)
+                viewModel.likeById(post.id,post.likedByMe)
             } else {
                 AlertDialog.Builder(context)
                     .setMessage(R.string.action_not_allowed)
@@ -133,7 +133,6 @@ class FeedFragment : Fragment() {
     private lateinit var binding: FragmentFeedBinding
     private lateinit var adapter: PostAdapter
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

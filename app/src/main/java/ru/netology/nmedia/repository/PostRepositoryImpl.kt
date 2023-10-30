@@ -1,14 +1,12 @@
 package ru.netology.nmedia.repository
 
 import androidx.paging.*
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okio.IOException
 import ru.netology.nmedia.api.*
-import ru.netology.nmedia.auxiliary.ConstantValues.emptyPost
 import ru.netology.nmedia.dao.*
 import ru.netology.nmedia.database.AppDbRoom
 import ru.netology.nmedia.dto.*
@@ -17,8 +15,6 @@ import ru.netology.nmedia.error.AppError
 import ru.netology.nmedia.error.NetworkError
 import ru.netology.nmedia.error.UnknownError
 import javax.inject.Inject
-import kotlin.properties.Delegates
-import kotlin.random.Random
 
 
 
@@ -34,7 +30,7 @@ class PostRepositoryImpl @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     override val data:Flow<PagingData<FeedItem>> = Pager(
-        config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+        config = PagingConfig(pageSize = 20, enablePlaceholders = true),
         pagingSourceFactory = { dao.getPagingSource() },
         remoteMediator = PostRemoteMediator(
             apiService = apiService,
@@ -164,14 +160,14 @@ class PostRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun likeByIdAsync(post: Post) {
-        dao.likeById(post.id)
+    override suspend fun likeByIdAsync(id: Long, likedByMe: Boolean) {
         try {
-            val response = if (post.likedByMe) {
-                apiService.dislikeById(post.id)
+            val response = if (likedByMe) {
+                dao.likeById(id)
+                apiService.dislikeById(id)
             } else {
-                apiService.likeById(post.id)
-
+                dao.likeById(id)
+                apiService.likeById(id)
             }
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
@@ -204,8 +200,9 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getById(id: Long) : Post {
-        val result = apiService.getById(id)
-        return result.body() ?: emptyPost//dao.getPostById(id).toDto()
+        //val result = apiService.getById(id)
+        return dao.getPostById(id).toDto()//result.body() ?: emptyPost
+
     }
 
     override suspend fun edit(post: Post) {

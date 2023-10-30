@@ -2,8 +2,6 @@ package ru.netology.nmedia.viewmodel
 
 import android.app.Application
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.lifecycle.*
@@ -37,7 +35,6 @@ class PostViewModel @Inject constructor(
     appAuth: AppAuth,
 ) : AndroidViewModel(application) {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private val cached: Flow<PagingData<FeedItem>> = repository
         .data
         .map { pagingData ->
@@ -66,7 +63,7 @@ class PostViewModel @Inject constructor(
                                     howOlderNext
                                 )
                             }
-                            (prev.id.rem(5) == 0L) -> {
+                            (prev.id.rem(15) == 0L) -> {
                                 Ad(
                                     Random.nextLong(),
                                     "figma.jpg"
@@ -80,9 +77,8 @@ class PostViewModel @Inject constructor(
                 }
             )
         }
-        //.cachedIn(viewModelScope)
+        .cachedIn(viewModelScope)
 
-    @RequiresApi(Build.VERSION_CODES.O)
     val data: Flow<PagingData<FeedItem>> = appAuth.authStateFlow
         .flatMapLatest { (myId, _) ->
             cached.map { pagingData ->
@@ -134,7 +130,6 @@ class PostViewModel @Inject constructor(
 
     fun viewNewPosts() = viewModelScope.launch {
         try {
-            newerCount.collectLatest { 0 }
             repository.showNewPosts()
             loadPosts()
             _dataState.value = FeedModelState.ShadowIdle
@@ -163,10 +158,10 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    fun likeById(post: Post) {
+    fun likeById(id: Long, likedByMe: Boolean) {
         viewModelScope.launch {
             try {
-                repository.likeByIdAsync(post)
+                repository.likeByIdAsync(id,likedByMe)
             } catch (e: Exception) {
                 _dataState.value = FeedModelState.Error
             }
