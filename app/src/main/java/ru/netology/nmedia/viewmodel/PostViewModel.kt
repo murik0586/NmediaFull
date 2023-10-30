@@ -79,7 +79,8 @@ class PostViewModel @Inject constructor(
         }
         .cachedIn(viewModelScope)
 
-    val data: Flow<PagingData<FeedItem>> = appAuth.authStateFlow
+    val data: Flow<PagingData<FeedItem>> =
+        appAuth.authStateFlow
         .flatMapLatest { (myId, _) ->
             cached.map { pagingData ->
                 pagingData.map { post ->
