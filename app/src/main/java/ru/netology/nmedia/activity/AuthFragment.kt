@@ -32,6 +32,7 @@ class AuthFragment : Fragment() {
     private var fragmentBinding: FragmentAuthBinding? = null
 
     override fun onCreateView(
+
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?

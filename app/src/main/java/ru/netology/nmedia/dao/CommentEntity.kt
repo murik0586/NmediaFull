@@ -10,6 +10,7 @@ import ru.netology.nmedia.dto.Post
 
 @Entity
 data class CommentEntity(
+
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     val postId: Long,
